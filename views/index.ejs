@@ -35,7 +35,7 @@
             });
 
             self.sendinput= function(){
-                alert('send:' + self.myinput());
+                //alert('send:' + self.myinput());
                 socket.emit('input',{message: self.myinput()});
             }
 
