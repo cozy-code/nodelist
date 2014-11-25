@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="ja">
+<head>
+    <meta http-equiv="content-type" content="text/html; charset=UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title><%= title %></title>
+    <script src="http://ajax.aspnetcdn.com/ajax/knockout/knockout-3.0.0.js"></script>
+    <script src="/socket.io/socket.io.js"></script>
+</head>
+<body>
+    <div>
+        <div class="form">
+            <form data-bind="submit: sendinput">
+                <fieldset>
+                    <input type="text" data-bind="value: myinput" plaseholder="enter message"/>
+                </fieldset>
+            </form>
+        </div>
+        <div data-bind="foreach: messages">
+            <div class="message"><span data-bind="text: message" class="white"></span></div>
+        </div>
+    </div>
+    <script type="text/javascript">
+        function MainViewModel(data){
+            var self=this;
+            //var socket=io.connect("<%=socketURL%>");
+            var socket=io.connect();
+
+            self.messages   =   ko.observableArray([]);
+            self.myinput    =   ko.observable();
+
+            socket.on('pushdata', function(data){
+                    //alert(data);
+                    self.messages(data);
+            });
+
+            self.sendinput= function(){
+                alert('send:' + self.myinput());
+                socket.emit('input',{message: self.myinput()});
+            }
+
+        }
+        var viewmodel=new MainViewModel();
+        ko.applyBindings(viewmodel);
+    </script>
+</body>
+</html>
+
