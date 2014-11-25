@@ -30,13 +30,13 @@ app.get('/', function(req,res){
 var io=require('socket.io')(server);
 
 // https://gist.github.com/arisetyo/5928974
-var messageArray=[{message:"Welcome!"}];
+var messageArray=new Array();
 
 io.on('connection',function(socket){
     console.log('connected');
     socket.emit('pushdata',messageArray);
     socket.on('input',function(data){
-        console.log('input');
+        console.log('input:%j' , data);
         messageArray.push(data);
         io.sockets.emit('pushdata',messageArray);
     });
