@@ -12,7 +12,9 @@
         <div class="form">
             <form data-bind="submit: sendinput">
                 <fieldset>
-                    <input type="text" data-bind="value: myinput" plaseholder="enter message"/>
+                    名前:<input type="text" data-bind="value: item_name" plaseholder="名前"/>
+                    個数:<input type="text" data-bind="value: qty" plaseholder="個数"/><br/>
+                    メモ:<input type="text" data-bind="value: remark" plaseholder="メモ"/>
                 </fieldset>
             </form>
         </div>
