@@ -23,8 +23,8 @@
     <script type="text/javascript">
         function MainViewModel(data){
             var self=this;
-            //var socket=io.connect("<%=socketURL%>");
-            var socket=io.connect();
+            var socket=io();
+            socket.emit("join","<%= sessionId %>");
 
             self.messages   =   ko.observableArray([]);
             self.myinput    =   ko.observable();

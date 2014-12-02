@@ -18,27 +18,38 @@ app.use(express.static(__dirname + '/public'));
 
 var server = app.listen(3000);
 
-app.get('/', function(req,res){
+app.get('/:sessionId', function(req,res){
     //console.log(url.parse(req.url,true));
+    console.log("session: %s",req.params.sessionId);
     console.log(req.query);
 
 
-    res.render('index',{title:"TITLE", socketURL: req.protocol + "://" + req.hostname + ":" + "3000"});
+    res.render('index',{title:"TITLE", sessionId: req.params.sessionId});
 });
 
 // init socket
 var io=require('socket.io')(server);
 
 // https://gist.github.com/arisetyo/5928974
-var messageArray=new Array();
+var Sessions=new Array();
 
 io.on('connection',function(socket){
+    var mSessionID="";
     console.log('connected');
-    socket.emit('pushdata',messageArray);
+    // http://socket.io/docs/rooms-and-namespaces/
+    //console.log(socket);
+    //socket.emit('pushdata',messageArray);
+    socket.on('join', function(sessionId){
+        socket.join(sessionId);
+        mSessionID= sessionId;
+    });
     socket.on('input',function(data){
         console.log('input:%j' , data);
-        messageArray.push(data);
-        io.sockets.emit('pushdata',messageArray);
+        if( !Sessions[mSessionID] ){
+            Sessions[mSessionID]=new Array();
+        }
+        Sessions[mSessionID].push(data);
+        io.to(mSessionID).emit('pushdata',Sessions[mSessionID]);
     });
     socket.on('disconnect',function(){
         io.sockets.emit("user disconnected");
